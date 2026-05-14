@@ -36,42 +36,44 @@ export class EmailService {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
-<body style="margin:0; padding:0; background:#0f172a; font-family:Arial, sans-serif;">
 
-  <div style="max-width:600px; margin:40px auto; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+<body style="margin:0; padding:0; font-family:Arial, sans-serif;">
+
+  <div style="max-width:600px; margin:40px auto; border-radius:16px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.1);">
 
     <!-- Header -->
-    <div style="background:linear-gradient(135deg,#4f46e5,#06b6d4); padding:30px; text-align:center;">
-      <h1 style="margin:0; color:white; font-size:22px; letter-spacing:1px;">
+    <div style="background:#4f46e5; padding:28px; text-align:center;">
+      <h1 style="margin:0; color:#ffffff; font-size:22px;">
         ${projectName}
       </h1>
-      <p style="margin:8px 0 0; color:#e0e7ff; font-size:14px;">
+      <p style="margin:6px 0 0; color:#c7d2fe; font-size:13px;">
         Secure Access Verification
       </p>
     </div>
 
     <!-- Body -->
-    <div style="padding:30px; text-align:center;">
+    <div style="padding:30px; text-align:center; background:#ffffff;">
 
       <h2 style="color:#111827; margin-bottom:10px;">
         Verify Your Login
       </h2>
 
       <p style="color:#6b7280; font-size:14px; line-height:1.5;">
-        We received a login request for your account. Use the secure link below to continue.
+        We received a login request for your account. Click the button below to continue securely.
       </p>
 
       <!-- Button -->
       <a href="${authlink}"
-         style="display:inline-block; margin:25px 0; padding:14px 28px; background:#4f46e5; color:white; text-decoration:none; border-radius:10px; font-weight:bold;">
+         style="display:inline-block; margin:24px 0; padding:12px 26px; background:#4f46e5; color:#ffffff; text-decoration:none; border-radius:8px; font-weight:600;">
         Verify Account
       </a>
 
-      <p style="color:#ef4444; font-size:13px; font-weight:600;">
-        This link will expire in 10 minutes.
+      <p style="color:#ef4444; font-size:12px; font-weight:600;">
+        This link expires in 10 minutes
       </p>
 
-      <div style="margin-top:25px; text-align:left; background:#f9fafb; padding:15px; border-radius:10px; font-size:12px; color:#374151;">
+      <!-- Security Info -->
+      <div style="margin-top:24px; text-align:left; background:#f9fafb; padding:14px; border-radius:8px; font-size:12px; color:#374151;">
         <p style="margin:0 0 6px;"><strong>Security Details</strong></p>
         <p style="margin:0;">IP Address: ${ipAddress || "N/A"}</p>
         <p style="margin:0;">Device: ${userAgent || "N/A"}</p>
@@ -80,7 +82,7 @@ export class EmailService {
     </div>
 
     <!-- Footer -->
-    <div style="background:#f3f4f6; text-align:center; padding:15px; font-size:12px; color:#6b7280;">
+    <div style="background:#f3f4f6; text-align:center; padding:14px; font-size:12px; color:#6b7280;">
       © ${new Date().getFullYear()} ${projectName} • Secure Authentication System
     </div>
 
@@ -88,7 +90,7 @@ export class EmailService {
 
 </body>
 </html>
-        `,
+`,
     });
   }
 

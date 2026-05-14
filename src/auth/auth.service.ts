@@ -60,7 +60,7 @@ export class AuthService {
         let user = await this.userModel.findOne({ email });
 
         const userrole = await this.roleModel.findOne({
-            role: "member",
+            role: "viewer",
         });
 
         if (!userrole) {
