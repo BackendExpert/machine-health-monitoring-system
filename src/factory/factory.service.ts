@@ -155,8 +155,6 @@ export class FactoryService {
             throw new NotFoundException("The User Not Found")
         }
 
-        const getallfactories = await this.factoryModel.find()
-
         const checkfid = await this.factoryModel.findById(body.factoryId)
 
         if (!checkfid) {
@@ -188,4 +186,70 @@ export class FactoryService {
         }
     }
 
+    async FetchFactories(
+        token: string
+    ) {
+        const payload = await this.jwtService.verify(token)
+        const user = await this.userModel.findOne({ email: payload.user })
+
+        if (!user) {
+            throw new NotFoundException("The User Not Found")
+        }
+
+        const fetchfactories = await this.factoryModel.find()
+
+        return {
+            success: true,
+            message: "All Factories Fetched Success"
+        }
+    }
+
+    async FetchFactoryByID(
+        token: string,
+        id: string
+    ) {
+        const payload = await this.jwtService.verify(token)
+        const user = await this.userModel.findOne({ email: payload.user })
+
+        if (!user) {
+            throw new NotFoundException("The User Not Found")
+        }
+
+        const getfactory = await this.factoryModel.findById(id)
+
+        if (!getfactory) {
+            throw new NotFoundException("The Factory Not Found")
+        }
+
+        return {
+            success: true,
+            message: "Factory Data Fetched Success"
+        }
+    }
+
+    async getProductionlinbyFid(
+        token: string,
+        id: string
+    ) {
+        const payload = await this.jwtService.verify(token)
+        const user = await this.userModel.findOne({ email: payload.user })
+
+        if (!user) {
+            throw new NotFoundException("The User Not Found")
+        }
+
+        const fetchpls = await this.productionlineModel.find({ factoryId: id })
+
+        if(fetchpls.length === 0) {
+            throw new ConflictException("There are no Production Lines at Factory")
+        }
+
+        return {
+            success: true,
+            message: "Production Lines Fetched Succes"
+        }
+       
+    }
+
+    
 }
