@@ -17,6 +17,15 @@ class Location {
 
     @Prop()
     type!: string;
+
+    @Prop()
+    lat!: number;
+
+    @Prop()
+    lng!: number;
+
+    @Prop()
+    address!: string;
 }
 
 @Schema({ timestamps: true })

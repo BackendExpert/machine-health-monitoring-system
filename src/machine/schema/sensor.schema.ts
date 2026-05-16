@@ -46,6 +46,18 @@ export class SensorData {
     })
     status!: string[];
 
+    @Prop({ required: true, index: true })
+    dayOfWeek!: number;
+
+    @Prop({ required: true, index: true })
+    hourOfDay!: number;
+
+    @Prop({ required: true })
+    minuteOfHour!: number;
+
+    @Prop({ required: true, default: 0 })
+    panalty!: number;
+
     @Prop({
         type: Date,
         default: Date.now,
