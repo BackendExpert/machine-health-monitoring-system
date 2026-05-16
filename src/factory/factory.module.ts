@@ -9,6 +9,7 @@ import { Role, RoleSchema } from "src/role/schema/role.schema";
 import { ProductionLine, ProductionLineSchema } from "./schema/productionline .schema";
 import { FactoryController } from "./factory.controller";
 import { FactoryService } from "./factory.service";
+import { EmailService } from "src/common/utils/email.util";
 
 @Module({
     imports: [
@@ -24,7 +25,8 @@ import { FactoryService } from "./factory.service";
     ],
     controllers: [FactoryController],
     providers: [
-        FactoryService
+        FactoryService,
+        EmailService
     ],
     exports: [FactoryService]
 })
