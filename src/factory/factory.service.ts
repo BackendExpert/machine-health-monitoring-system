@@ -169,10 +169,16 @@ export class FactoryService {
             throw new NotFoundException("Given Factory Cannot Find")
         }
 
+        const checkpl = await this.productionlineModel.findOne({ name: body.name })
+
+        if(checkpl) {
+            throw new ConflictException("Producation Line Already Added to Factory")
+        }
+
         const createPL = await this.productionlineModel.create({
             name: body.name,
             max_machines: body.max_machines,
-            factoryId: body.factoryId
+            factoryId: new Types.ObjectId(body.factoryId),
         })
 
         await createAuditLog(this.auditlogModel, {
@@ -183,8 +189,7 @@ export class FactoryService {
             userAgent,
             metadata: {
                 ipAddress,
-                userAgent,
-                location,
+                userAgent
             },
         });
 
