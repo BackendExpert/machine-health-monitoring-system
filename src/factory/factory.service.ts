@@ -208,7 +208,8 @@ export class FactoryService {
 
         return {
             success: true,
-            message: "All Factories Fetched Success"
+            message: "All Factories Fetched Success",
+            result: fetchfactories,
         }
     }
 
@@ -231,7 +232,8 @@ export class FactoryService {
 
         return {
             success: true,
-            message: "Factory Data Fetched Success"
+            message: "Factory Data Fetched Success",
+            result: getfactory,
         }
     }
 
@@ -254,7 +256,8 @@ export class FactoryService {
 
         return {
             success: true,
-            message: "Production Lines Fetched Succes"
+            message: "Production Lines Fetched Succes",
+            result: fetchpls,
         }
        
     }
