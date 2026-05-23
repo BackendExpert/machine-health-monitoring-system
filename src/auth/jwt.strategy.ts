@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 interface JwtPayload {
     sub: string;
-    user: string;
+    email: string;
     role?: string;
     type?: string;
 }
@@ -21,13 +21,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: JwtPayload) {
-        if (!payload?.user) throw new UnauthorizedException('JWT missing user email');
-        if (payload.type !== 'LOGIN_TOKEN') throw new UnauthorizedException('Invalid token type');
+        if (!payload?.email) {
+            throw new UnauthorizedException('JWT missing email');
+        }
+
+        if (payload.type && payload.type !== 'LOGIN_TOKEN') {
+            throw new UnauthorizedException('Invalid token type');
+        }
 
         return {
             userId: payload.sub,
-            email: payload.user.toLowerCase(),
-            role: payload.role, 
+            email: payload.email.toLowerCase(),
+            role: payload.role,
         };
     }
 }

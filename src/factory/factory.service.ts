@@ -11,6 +11,7 @@ import { Role, RoleDocument } from "src/role/schema/role.schema";
 import { FactoryCreateDto } from "./dto/factory-create.dto";
 import { CreateProductionLineDto } from "./dto/productionline-create.dto";
 import { createAuditLog } from "src/common/utils/auditlogs.util";
+import { Types } from 'mongoose';
 
 @Injectable()
 export class FactoryService {
@@ -38,7 +39,7 @@ export class FactoryService {
 
     async FetchPlantAdmins(token: string) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")
@@ -66,7 +67,7 @@ export class FactoryService {
         userAgent?: string
     ) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")
@@ -78,11 +79,19 @@ export class FactoryService {
             throw new ConflictException("Process cannot be continue")
         }
 
-        const checkfactory = await this.factoryModel.create({
+        const checkfactory = await this.factoryModel.findOne({
+            name: body.name
+        })
+
+        if(checkfactory) {
+            throw new ConflictException("Factory Already Create")
+        }
+
+        const FactoryCreate = await this.factoryModel.create({
             name: body.name,
             location: body.location,
             description: body.description,
-            plant_admin: body.plant_admin,
+            plant_admin: new Types.ObjectId(body.plant_admin),
         })
 
         await createAuditLog(this.auditlogModel, {
@@ -94,7 +103,6 @@ export class FactoryService {
             metadata: {
                 ipAddress,
                 userAgent,
-                location,
             },
         });
 
@@ -111,7 +119,7 @@ export class FactoryService {
         userAgent?: string
     ) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")
@@ -149,7 +157,7 @@ export class FactoryService {
         userAgent?: string
     ) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")
@@ -190,7 +198,7 @@ export class FactoryService {
         token: string
     ) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")
@@ -209,7 +217,7 @@ export class FactoryService {
         id: string
     ) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")
@@ -232,7 +240,7 @@ export class FactoryService {
         id: string
     ) {
         const payload = await this.jwtService.verify(token)
-        const user = await this.userModel.findOne({ email: payload.user })
+        const user = await this.userModel.findOne({ email: payload.email })
 
         if (!user) {
             throw new NotFoundException("The User Not Found")

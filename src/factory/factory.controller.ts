@@ -19,7 +19,6 @@ export class FactoryController {
     @Permissions('factory:fetch-plant-admin')
 
     fetchPlantAdmin(
-        @Body() body: FactoryCreateDto,
         @Headers("authorization") authHeader: string,
     ) {
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
