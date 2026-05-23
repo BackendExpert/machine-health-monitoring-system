@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 import { FactoryModule } from './factory/factory.module';
+import { MachineModule } from './machine/machine.module';
 
 
 @Module({
@@ -19,6 +20,7 @@ import { FactoryModule } from './factory/factory.module';
     DatabaseModule,
     AuthModule,
     FactoryModule,
+    MachineModule
   ],
   controllers: [AppController],
   providers: [AppService],
