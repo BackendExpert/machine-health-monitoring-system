@@ -1,4 +1,4 @@
-import { Body, Controller, Headers, Post, UnauthorizedException, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Headers, Post, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { MachineService } from "./machine.service";
 import { JwtAuthGuard } from "src/common/guard/jwt-auth.guard";
 import { PermissionsGuard } from "src/common/guard/permissions.guard";
@@ -36,4 +36,38 @@ export class MachineController {
             client.userAgent
         )
     }
+
+    @Get('fetch-machines')
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions('machine:fetch-all')
+
+    FetchAllMachine(
+        @Headers("authorization") authHeader: string,
+    ) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Invalid or missing token");
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        return this.machineService.FetchAllMachines(token)
+    }
+
+    @Get('fetch-plant-machines')
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions('machine:fetch-all')
+
+    FetchPlantAdminMachines(
+        @Headers("authorization") authHeader: string,
+    ) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Invalid or missing token");
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        return this.machineService.FetchPlantAdminMachine(token)
+
+    }
+
 }

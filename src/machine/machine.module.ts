@@ -9,6 +9,8 @@ import { SensorData, SensorDataSchema } from "./schema/sensor.schema";
 import { MachineController } from "./machine.controller";
 import { MachineService } from "./machine.service";
 import { EmailService } from "src/common/utils/email.util";
+import { ProductionLine, ProductionLineSchema } from "src/factory/schema/productionline .schema";
+import { Factory, FactorySchema } from "src/factory/schema/factory.schema";
 
 @Module({
     imports: [
@@ -18,7 +20,9 @@ import { EmailService } from "src/common/utils/email.util";
             { name: User.name, schema: UserSchema },
             { name: Machine.name, schema: MachineSchema },
             { name: AuditLog.name, schema: AuditLogSchema }, 
-            { name: SensorData.name, schema: SensorDataSchema }
+            { name: SensorData.name, schema: SensorDataSchema },
+            { name: ProductionLine.name, schema: ProductionLineSchema},
+            { name: Factory.name, schema: FactorySchema },
         ])
     ],
     controllers: [MachineController],
