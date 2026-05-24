@@ -83,7 +83,7 @@ export class FactoryService {
             name: body.name
         })
 
-        if(checkfactory) {
+        if (checkfactory) {
             throw new ConflictException("Factory Already Create")
         }
 
@@ -171,7 +171,7 @@ export class FactoryService {
 
         const checkpl = await this.productionlineModel.findOne({ name: body.name })
 
-        if(checkpl) {
+        if (checkpl) {
             throw new ConflictException("Producation Line Already Added to Factory")
         }
 
@@ -255,7 +255,7 @@ export class FactoryService {
 
         const fetchpls = await this.productionlineModel.find({ factoryId: id })
 
-        if(fetchpls.length === 0) {
+        if (fetchpls.length === 0) {
             throw new ConflictException("There are no Production Lines at Factory")
         }
 
@@ -264,8 +264,27 @@ export class FactoryService {
             message: "Production Lines Fetched Succes",
             result: fetchpls,
         }
-       
+
     }
 
-    
+    async ProductionLines(
+        token: string
+    ) {
+        const payload = await this.jwtService.verify(token)
+        const user = await this.userModel.findOne({ email: payload.email })
+
+        if (!user) {
+            throw new NotFoundException("The User Not Found")
+        }
+
+        const fetchPLs = await this.productionlineModel.find().populate('factoryId')
+
+        return {
+            success: true,
+            message: "Producation Lines Fetched Success",
+            result: fetchPLs
+        }
+    }
+
+
 }

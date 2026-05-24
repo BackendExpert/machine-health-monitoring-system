@@ -153,4 +153,21 @@ export class FactoryController {
     }
 
 
+    @Get('production-lines')
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions('factory:fetch-productions')
+
+    FetchProducationLines (
+        @Headers("authorization") authHeader: string,
+
+    ) {
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new UnauthorizedException("Invalid or missing token");
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        return this.factoryService.ProductionLines(token)
+    }
+
 }
