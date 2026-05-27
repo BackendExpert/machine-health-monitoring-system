@@ -12,6 +12,8 @@ import { Types } from 'mongoose';
 import { createAuditLog } from "src/common/utils/auditlogs.util";
 import { ProductionLine, ProductionLineDocument } from "src/factory/schema/productionline .schema";
 import { Factory, FactoryDocument } from "src/factory/schema/factory.schema";
+import { Cron } from "@nestjs/schedule";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class MachineService {
@@ -35,8 +37,102 @@ export class MachineService {
         private readonly sensorDataModel: Model<SensorDataDocument>,
 
         private jwtService: JwtService,
-        private emailService: EmailService
+        private emailService: EmailService,
+        private readonly configService: ConfigService,
     ) { }
+
+    @Cron("*/10 * * * * *")
+    async CreateMachineSensorData() {
+        console.log("⚡ Fetching machine sensor data", new Date().toISOString());
+
+        const baseUrl = this.configService.get<string>('API_BASE_URL');
+        const client_id = this.configService.get<string>('API_CLIENT_ID');
+        const secret = this.configService.get<string>('API_SECRET');
+        const path = this.configService.get<string>('API_GENERATE_RANDOM_PATH');
+        const method = this.configService.get<string>('API_METHOD');
+
+        const url = `${baseUrl}${path}`;
+
+        const payload = { tenant_id: "tenant_001" };
+        const body = JSON.stringify(payload);
+
+        const timestamp = Math.floor(Date.now() / 1000).toString();
+        const nonce = crypto.randomUUID();
+
+        const bodyHash = Buffer.from(
+            require("crypto")
+                .createHash("sha256")
+                .update(body)
+                .digest()
+        ).toString("base64");
+
+        const canonicalString = [
+            method,
+            path,
+            timestamp,
+            nonce,
+            bodyHash
+        ].join("\n");
+
+        const signature = Buffer.from(
+            require("crypto")
+                .createHmac("sha256", secret)
+                .update(canonicalString)
+                .digest()
+        ).toString("base64");
+
+        const headers: HeadersInit = {
+            "Content-Type": "application/json",
+            "X-Client-Id": client_id || '',
+            "X-Timestamp": timestamp,
+            "X-Nonce": nonce,
+            "X-Signature": signature
+        };
+
+        const res = await fetch(url, {
+            method,
+            headers,
+            body
+        });
+
+        const data = await res.json();
+
+        if (!data.sensor_data || !Array.isArray(data.sensor_data)) {
+            console.log("❌ No sensor data found");
+            return;
+        }
+
+        const now = new Date();
+
+        const sensors = data.sensor_data.map((item: any) => ({
+            mid: item.mid,
+            machineId: item.machineId,
+            temperature: item.temperature,
+            vibration: item.vibration,
+            pressure: item.pressure,
+            rpm: item.rpm,
+            load: item.load,
+            status: item.status || ['normal'],
+            dayOfWeek: item.dayOfWeek,
+            hourOfDay: item.hourOfDay,
+            minuteOfHour: item.minuteOfHour,
+            penalty: item.penalty || 0,
+            recordedAt: new Date(item.recordedAt)
+        }));
+
+        await this.sensorDataModel.create({
+            timestamp: now,
+            sensor_data: sensors
+        });
+
+        console.log("✅ Machine sensor data stored successfully");
+    }
+
+
+
+
+
+
 
     async CreateMachine(
         token: string,
@@ -154,4 +250,6 @@ export class MachineService {
             result: getmachines
         }
     }
+
+
 }

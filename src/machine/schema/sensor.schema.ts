@@ -3,8 +3,12 @@ import { Document, Types } from 'mongoose';
 
 export type SensorDataDocument = SensorData & Document;
 
-@Schema({ timestamps: true })
-export class SensorData {
+@Schema({ _id: false })
+class Sensor {
+
+    @Prop({ required: true, min: 0 })
+    mid!: number;
+
     @Prop({ type: Types.ObjectId, ref: 'Machine', required: true, index: true })
     machineId!: Types.ObjectId;
 
@@ -17,10 +21,10 @@ export class SensorData {
     @Prop({ required: true, min: 0 })
     pressure!: number;
 
-    @Prop({ min: 0 })
+    @Prop({ required: true, min: 0 })
     rpm!: number;
 
-    @Prop({ min: 0 })
+    @Prop({ required: true, min: 0 })
     load!: number;
 
     @Prop({
@@ -42,7 +46,6 @@ export class SensorData {
             'medium_load',
             'high_load',
         ],
-        index: true,
     })
     status!: string[];
 
@@ -56,14 +59,26 @@ export class SensorData {
     minuteOfHour!: number;
 
     @Prop({ required: true, default: 0 })
-    panalty!: number;
+    penalty!: number;
 
     @Prop({
         type: Date,
-        default: Date.now,
+        required: true,
         index: true,
     })
     recordedAt!: Date;
+}
+
+const SensorSchema = SchemaFactory.createForClass(Sensor);
+
+@Schema({ timestamps: true })
+export class SensorData {
+
+    @Prop({ required: true })
+    timestamp!: Date;
+
+    @Prop({ type: [SensorSchema], default: [] })
+    sensor_data!: Sensor[];
 }
 
 export const SensorDataSchema = SchemaFactory.createForClass(SensorData);
