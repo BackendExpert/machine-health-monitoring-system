@@ -41,7 +41,7 @@ export class MachineService {
         private readonly configService: ConfigService,
     ) { }
 
-    @Cron("*/10 * * * * *")
+    @Cron("0 */15 * * * *")
     async CreateMachineSensorData() {
         console.log("⚡ Fetching machine sensor data", new Date().toISOString());
 
