@@ -41,7 +41,9 @@ export class MachineService {
         private readonly configService: ConfigService,
     ) { }
 
-    @Cron("0 */15 * * * *")
+    // @Cron("0 */15 * * * *")
+    @Cron("*/15 * * * * *")
+
     async CreateMachineSensorData() {
         console.log("⚡ Fetching machine sensor data", new Date().toISOString());
 
@@ -124,6 +126,14 @@ export class MachineService {
             timestamp: now,
             sensor_data: sensors
         });
+
+        for (const item of sensors) {
+            await this.machineModel.updateOne(
+                { _id: item.machineId },
+                { $inc: { healthScore: -item.penalty } }
+            );
+        }
+
 
         console.log("✅ Machine sensor data stored successfully");
     }
